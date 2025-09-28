@@ -238,13 +238,13 @@ export default function EventDetailsPage() {
                 {event.partners.length === 0 && (
                   <li className="flex items-center space-x-2">
                     <span className="w-2 h-2 bg-red-400 rounded-full"></span>
-                    <span>Добавьте партнеров во вкладке "Партнеры"</span>
+                    <span>Добавьте партнеров во вкладке &quot;Партнеры&quot;</span>
                   </li>
                 )}
                 {event.teams.length === 0 && event.partners.length > 0 && (
                   <li className="flex items-center space-x-2">
                     <span className="w-2 h-2 bg-yellow-400 rounded-full"></span>
-                    <span>Добавьте команды во вкладке "Команды"</span>
+                    <span>Добавьте команды во вкладке &quot;Команды&quot;</span>
                   </li>
                 )}
                 {event.teams.length > 0 && (

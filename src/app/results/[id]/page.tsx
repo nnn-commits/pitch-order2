@@ -80,7 +80,7 @@ export default function ResultsPage() {
             Результатов пока нет
           </h2>
           <p className="text-gray-600 mb-6">
-            Проведите жеребьевку для события "{event.name}"
+            Проведите жеребьевку для события &quot;{event.name}&quot;
           </p>
           <div className="flex justify-center space-x-4">
             <button
