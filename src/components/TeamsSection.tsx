@@ -59,7 +59,8 @@ export function TeamsSection({
     });
   };
 
-  const handleSaveEdit = () => {
+  const handleSaveEdit = (e: React.FormEvent) => {
+    e.preventDefault();
     if (!formData.name.trim() || !formData.partnerId || !editingTeam) return;
     
     // Проверяем на дубликаты (исключая текущую команду)
@@ -94,11 +95,6 @@ export function TeamsSection({
     }
   };
 
-  const getPartnerName = (partnerId: string) => {
-    const partner = partners.find(p => p.id === partnerId);
-    return partner ? partner.name : 'Неизвестный партнер';
-  };
-
   const groupedTeams = partners.map(partner => ({
     partner,
     teams: teams.filter(team => team.partnerId === partner.id)
@@ -113,7 +109,7 @@ export function TeamsSection({
             Сначала добавьте партнеров
           </h3>
           <p className="text-gray-600">
-            Команды привязываются к партнерам. Перейдите во вкладку "Партнеры" и добавьте их.
+            Команды привязываются к партнерам. Перейдите во вкладку &quot;Партнеры&quot; и добавьте их.
           </p>
         </div>
       </div>

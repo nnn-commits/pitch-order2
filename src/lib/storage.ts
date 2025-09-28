@@ -19,16 +19,16 @@ export const loadEvents = (): Event[] => {
     const stored = localStorage.getItem(STORAGE_KEYS.EVENTS);
     if (stored) {
       try {
-        const parsed = JSON.parse(stored);
-        return parsed.map((event: any) => ({
+        const parsed = JSON.parse(stored) as Event[];
+        return parsed.map((event) => ({
           ...event,
           createdAt: new Date(event.createdAt),
           updatedAt: new Date(event.updatedAt),
-          partners: event.partners?.map((p: any) => ({
+          partners: event.partners?.map((p) => ({
             ...p,
             createdAt: new Date(p.createdAt)
           })) || [],
-          teams: event.teams?.map((t: any) => ({
+          teams: event.teams?.map((t) => ({
             ...t,
             createdAt: new Date(t.createdAt)
           })) || []
@@ -70,11 +70,11 @@ export const loadLotteryResults = (): LotteryResult[] => {
     const stored = localStorage.getItem(STORAGE_KEYS.LOTTERY_RESULTS);
     if (stored) {
       try {
-        const parsed = JSON.parse(stored);
-        return parsed.map((result: any) => ({
+        const parsed = JSON.parse(stored) as LotteryResult[];
+        return parsed.map((result) => ({
           ...result,
           createdAt: new Date(result.createdAt),
-          sequence: result.sequence?.map((team: any) => ({
+          sequence: result.sequence?.map((team) => ({
             ...team,
             createdAt: new Date(team.createdAt)
           })) || []

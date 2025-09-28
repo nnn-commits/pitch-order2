@@ -14,7 +14,7 @@ export function LotteryResults({ result, event, showDetails = false }: LotteryRe
     return partner ? partner.name : 'Неизвестный партнер';
   };
 
-  const getPartnerColor = (partnerId: string, index: number) => {
+  const getPartnerColor = (partnerId: string) => {
     const colors = [
       'bg-blue-100 text-blue-800',
       'bg-green-100 text-green-800', 
@@ -87,7 +87,7 @@ export function LotteryResults({ result, event, showDetails = false }: LotteryRe
         <div className="grid gap-4">
           {result.sequence.map((team, index) => {
             const partnerName = getPartnerName(team.partnerId);
-            const colorClass = getPartnerColor(team.partnerId, index);
+            const colorClass = getPartnerColor(team.partnerId);
             const isViolation = result.violations?.some(v => v.position === index);
             
             return (
@@ -180,7 +180,7 @@ export function LotteryResults({ result, event, showDetails = false }: LotteryRe
               <div className="space-y-2">
                 {event.partners.map(partner => {
                   const partnerTeams = result.sequence.filter(team => team.partnerId === partner.id);
-                  const colorClass = getPartnerColor(partner.id, 0);
+                  const colorClass = getPartnerColor(partner.id);
                   
                   return (
                     <div key={partner.id} className="flex justify-between items-center">

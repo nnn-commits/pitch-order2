@@ -26,8 +26,6 @@ export function EventCard({ event, onSelect, onDelete }: EventCardProps) {
     }).format(date);
   };
 
-  const partnerNames = event.partners.map(p => p.name).join(', ');
-
   return (
     <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 border">
       <div className="flex justify-between items-start mb-4">
