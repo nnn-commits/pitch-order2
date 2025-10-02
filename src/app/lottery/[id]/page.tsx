@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { CheckIcon, WarningIcon } from '@/components/Icons';
 import { Event, LotteryResult, LotteryValidationResult } from '@/types';
 import { loadEvents, loadLotteryResults, saveLotteryResults } from '@/lib/storage';
 import { 
@@ -114,7 +115,8 @@ export default function LotteryPage() {
         </p>
         <button
           onClick={() => router.push('/')}
-          className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+          className="text-white px-6 py-3 rounded-lg hover:opacity-90 transition-colors"
+          style={{ backgroundColor: '#3B9BFF' }}
         >
           Вернуться к событиям
         </button>
@@ -316,7 +318,8 @@ export default function LotteryPage() {
                 <button
                   onClick={handleGenerateLottery}
                   disabled={isGenerating}
-                  className="bg-blue-600 text-white px-8 py-4 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-3 text-lg font-medium"
+                  className="text-white px-8 py-4 rounded-lg hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-3 text-lg font-medium"
+                  style={{ backgroundColor: '#3B9BFF' }}
                 >
                   {isGenerating ? (
                     <>
@@ -325,7 +328,6 @@ export default function LotteryPage() {
                     </>
                   ) : (
                     <>
-                      <span>🎲</span>
                       <span>Определить последовательность</span>
                     </>
                   )}
@@ -337,17 +339,17 @@ export default function LotteryPage() {
                   <button
                     onClick={handleRepeatLottery}
                     disabled={isGenerating}
-                    className="bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                    className="text-white px-6 py-3 rounded-lg hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                    style={{ backgroundColor: '#FE7096' }}
                   >
-                    <span>🔄</span>
                     <span>Повторить жеребьевку</span>
                   </button>
                   
                   <button
                     onClick={() => router.push(`/results/${eventId}`)}
-                    className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors flex items-center space-x-2"
+                    className="text-white px-6 py-3 rounded-lg hover:opacity-90 transition-colors flex items-center space-x-2"
+                    style={{ backgroundColor: '#47EA91' }}
                   >
-                    <span>📊</span>
                     <span>Смотреть результаты</span>
                   </button>
                 </div>
@@ -386,7 +388,19 @@ export default function LotteryPage() {
                         }).format(result.createdAt)}
                       </div>
                       <div className="text-xs text-gray-500">
-                        {result.isValid ? '✅ Корректная' : '⚠️ С нарушениями'}
+                        <div className="flex items-center space-x-2">
+                          {result.isValid ? (
+                            <>
+                              <CheckIcon className="w-4 h-4 text-green-500" />
+                              <span>Корректная</span>
+                            </>
+                          ) : (
+                            <>
+                              <WarningIcon className="w-4 h-4 text-yellow-500" />
+                              <span>С нарушениями</span>
+                            </>
+                          )}
+                        </div>
                       </div>
                     </div>
                     <button
@@ -403,7 +417,9 @@ export default function LotteryPage() {
         </div>
       ) : (
         <div className="text-center py-12">
-          <div className="text-6xl mb-4">⚠️</div>
+          <div className="mb-4">
+            <WarningIcon className="w-16 h-16 text-yellow-500 mx-auto" />
+          </div>
           <h3 className="text-xl font-medium text-gray-900 mb-2">
             Невозможно провести жеребьевку
           </h3>
@@ -412,7 +428,8 @@ export default function LotteryPage() {
           </p>
           <button
             onClick={() => router.push(`/events/${event.id}`)}
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+            className="text-white px-6 py-3 rounded-lg hover:opacity-90 transition-colors"
+            style={{ backgroundColor: '#3B9BFF' }}
           >
             Редактировать событие
           </button>

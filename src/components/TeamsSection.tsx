@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { TrashIcon } from './TrashIcon';
+import { EditIcon } from './Icons';
 import { Team, Partner } from '@/types';
 
 interface TeamsSectionProps {
@@ -124,7 +126,8 @@ export function TeamsSection({
         </h2>
         <button
           onClick={() => setIsAdding(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+          className="text-white px-4 py-2 rounded-lg hover:opacity-90 transition-colors flex items-center space-x-2"
+          style={{ backgroundColor: '#47EA91' }}
         >
           <span>➕</span>
           <span>Добавить команду</span>
@@ -188,7 +191,8 @@ export function TeamsSection({
             <div className="flex space-x-3">
               <button
                 type="submit"
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
+                className="text-white px-4 py-2 rounded hover:opacity-90 transition-colors"
+                style={{ backgroundColor: '#47EA91' }}
                 disabled={!formData.name.trim() || !formData.partnerId}
               >
                 {editingTeam ? 'Сохранить' : 'Добавить'}
@@ -261,14 +265,14 @@ export function TeamsSection({
                           className="text-gray-400 hover:text-blue-500 transition-colors p-1"
                           title="Редактировать команду"
                         >
-                          ✏️
+                          <EditIcon className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleDelete(team)}
                           className="text-gray-400 hover:text-red-500 transition-colors p-1"
                           title="Удалить команду"
                         >
-                          🗑️
+                          <TrashIcon className="w-4 h-4" />
                         </button>
                       </div>
                     </div>

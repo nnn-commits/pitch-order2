@@ -2,12 +2,13 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { ListIcon } from './Icons';
 
 export function Navigation() {
   const pathname = usePathname();
 
   const navItems = [
-    { href: '/', label: 'События', icon: '📋' },
+    { href: '/', label: 'События', icon: <ListIcon className="w-5 h-5" /> },
     { href: '/create', label: 'Создать событие', icon: '➕' },
   ];
 

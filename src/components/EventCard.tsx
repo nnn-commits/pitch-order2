@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { Event } from '@/types';
+import { TrashIcon } from './TrashIcon';
 
 interface EventCardProps {
   event: Event;
@@ -37,7 +38,7 @@ export function EventCard({ event, onSelect, onDelete }: EventCardProps) {
           className="text-gray-400 hover:text-red-500 transition-colors p-1"
           title="Удалить событие"
         >
-          🗑️
+          <TrashIcon className="w-4 h-4" />
         </button>
       </div>
 
@@ -94,7 +95,8 @@ export function EventCard({ event, onSelect, onDelete }: EventCardProps) {
         <Link
           href={`/lottery/${event.id}`}
           onClick={() => onSelect(event.id)}
-          className="flex-1 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors text-center text-sm font-medium"
+          className="flex-1 text-white px-4 py-2 rounded hover:opacity-90 transition-colors text-center text-sm font-medium"
+          style={{ backgroundColor: '#3B9BFF' }}
         >
           Жеребьевка
         </Link>

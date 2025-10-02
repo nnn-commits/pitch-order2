@@ -110,7 +110,8 @@ export default function CreateEventPage() {
             </button>
             <button
               type="submit"
-              className="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 text-white px-6 py-3 rounded-lg hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ backgroundColor: '#47EA91' }}
               disabled={isSubmitting || !eventName.trim()}
             >
               {isSubmitting ? 'Создание...' : 'Создать событие'}

@@ -1,6 +1,7 @@
 'use client';
 
 import { Event, LotteryValidationResult } from '@/types';
+import { CheckIcon, WarningIcon } from './Icons';
 
 interface LotteryValidationProps {
   validation: LotteryValidationResult;
@@ -28,7 +29,7 @@ export function LotteryValidation({ validation, event }: LotteryValidationProps)
     return (
       <div className="bg-green-50 border border-green-200 rounded-lg p-6">
         <div className="flex items-start space-x-3">
-          <div className="text-2xl">✅</div>
+          <CheckIcon className="w-8 h-8 text-green-500" />
           <div className="flex-1">
             <h3 className="font-medium text-green-900 mb-2">
               Жеребьевка возможна
@@ -89,7 +90,10 @@ export function LotteryValidation({ validation, event }: LotteryValidationProps)
                       ? 'bg-red-200 text-red-800' 
                       : 'bg-gray-200 text-gray-700'
                   }`}>
-                    {count} команд {count > maxAllowedPerPartner && '⚠️'}
+                    <span className="flex items-center space-x-1">
+                      <span>{count} команд</span>
+                      {count > maxAllowedPerPartner && <WarningIcon className="w-4 h-4 text-yellow-500" />}
+                    </span>
                   </span>
                 </div>
               ))}

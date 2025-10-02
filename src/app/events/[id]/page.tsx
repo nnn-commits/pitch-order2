@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { WarningIcon } from '@/components/Icons';
 import { Event, Partner, Team, LotteryValidationResult } from '@/types';
 import { loadEvents, saveEvents, createPartner, createTeam } from '@/lib/storage';
 import { validateLotteryFeasibility } from '@/lib/lottery';
@@ -121,7 +122,8 @@ export default function EventDetailsPage() {
         <h1 className="text-2xl font-bold text-gray-900 mb-4">Событие не найдено</h1>
         <button
           onClick={() => router.push('/')}
-          className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+          className="text-white px-6 py-3 rounded-lg hover:opacity-90 transition-colors"
+          style={{ backgroundColor: '#3B9BFF' }}
         >
           Вернуться к событиям
         </button>
@@ -130,9 +132,9 @@ export default function EventDetailsPage() {
   }
 
   const tabs = [
-    { id: 'info' as const, label: 'Основная информация', icon: 'ℹ️' },
-    { id: 'partners' as const, label: `Партнеры (${event.partners.length})`, icon: '🏢' },
-    { id: 'teams' as const, label: `Команды (${event.teams.length})`, icon: '👥' },
+    { id: 'info' as const, label: 'Основная информация' },
+    { id: 'partners' as const, label: `Партнеры (${event.partners.length})` },
+    { id: 'teams' as const, label: `Команды (${event.teams.length})` },
   ];
 
   const formatDate = (date: Date) => {
@@ -168,13 +170,15 @@ export default function EventDetailsPage() {
             onClick={() => router.push(`/lottery/${event.id}`)}
             className={`px-6 py-2 rounded-lg transition-colors flex items-center space-x-2 ${
               lotteryValidation?.canGenerate 
-                ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                ? 'text-white hover:opacity-90' 
                 : 'bg-gray-400 text-gray-200 cursor-not-allowed'
             }`}
+            style={{
+              backgroundColor: lotteryValidation?.canGenerate ? '#3B9BFF' : undefined
+            }}
             disabled={!lotteryValidation?.canGenerate}
             title={!lotteryValidation?.canGenerate ? 'Невозможно провести жеребьевку без нарушений' : ''}
           >
-            <span>🎲</span>
             <span>Жеребьевка</span>
           </button>
         </div>
@@ -185,7 +189,7 @@ export default function EventDetailsPage() {
         <div className="bg-red-50 border border-red-200 rounded-lg p-4">
           <div className="flex items-start space-x-3">
             <div className="flex-shrink-0">
-              <span className="text-red-400 text-xl">⚠️</span>
+              <WarningIcon className="w-5 h-5 text-red-400" />
             </div>
             <div>
               <h3 className="font-medium text-red-800 mb-2">
@@ -208,14 +212,13 @@ export default function EventDetailsPage() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`py-4 px-1 border-b-2 font-medium text-sm flex items-center space-x-2 ${
+              className={`py-4 px-1 border-b-2 font-medium text-sm ${
                 activeTab === tab.id
                   ? 'border-blue-500 text-blue-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
-              <span>{tab.icon}</span>
-              <span>{tab.label}</span>
+              {tab.label}
             </button>
           ))}
         </nav>

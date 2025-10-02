@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { TrashIcon } from './TrashIcon';
 import { Partner } from '@/types';
 
 interface PartnersSectionProps {
@@ -56,7 +57,8 @@ export function PartnersSection({
         </h2>
         <button
           onClick={() => setIsAdding(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+          className="text-white px-4 py-2 rounded-lg hover:opacity-90 transition-colors flex items-center space-x-2"
+          style={{ backgroundColor: '#47EA91' }}
         >
           <span>➕</span>
           <span>Добавить</span>
@@ -95,7 +97,8 @@ export function PartnersSection({
             />
             <button
               type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
+              className="text-white px-4 py-2 rounded hover:opacity-90 transition-colors"
+              style={{ backgroundColor: '#47EA91' }}
               disabled={!newPartnerName.trim()}
             >
               Добавить
@@ -153,7 +156,7 @@ export function PartnersSection({
                 className="text-gray-400 hover:text-red-500 transition-colors p-1"
                 title="Удалить партнера"
               >
-                🗑️
+                <TrashIcon className="w-4 h-4" />
               </button>
             </div>
           ))}

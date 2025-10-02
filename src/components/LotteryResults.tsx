@@ -1,6 +1,7 @@
 'use client';
 
 import { Event, LotteryResult } from '@/types';
+import { WarningIcon } from './Icons';
 
 interface LotteryResultsProps {
   result: LotteryResult;
@@ -43,7 +44,7 @@ export function LotteryResults({ result, event, showDetails = false }: LotteryRe
   return (
     <div className="bg-white rounded-lg shadow-lg overflow-hidden">
       {/* Заголовок результата */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6">
+      <div className="text-white p-6" style={{ backgroundColor: '#3B9BFF' }}>
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold mb-2">
@@ -63,7 +64,10 @@ export function LotteryResults({ result, event, showDetails = false }: LotteryRe
       {result.violations && result.violations.length > 0 && (
         <div className="bg-yellow-50 border-b border-yellow-200 p-4">
           <h3 className="font-medium text-yellow-900 mb-2">
-            ⚠️ Обнаружены нарушения ограничений:
+            <div className="flex items-center space-x-2">
+              <WarningIcon className="w-4 h-4 text-yellow-500" />
+              <span>Обнаружены нарушения ограничений:</span>
+            </div>
           </h3>
           <ul className="text-sm text-yellow-700 space-y-1">
             {result.violations.map((violation, index) => (
@@ -95,8 +99,9 @@ export function LotteryResults({ result, event, showDetails = false }: LotteryRe
                 {/* Номер */}
                 <div className="flex-shrink-0">
                   <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg ${
-                    isViolation ? 'bg-yellow-200 text-yellow-800' : 'bg-blue-600 text-white'
-                  }`}>
+                    isViolation ? 'bg-yellow-200 text-yellow-800' : 'text-white'
+                  }`}
+                  style={!isViolation ? { backgroundColor: '#3B9BFF' } : undefined}>
                     {index + 1}
                   </div>
                 </div>
@@ -123,7 +128,7 @@ export function LotteryResults({ result, event, showDetails = false }: LotteryRe
                 {/* Индикатор нарушения */}
                 {isViolation && (
                   <div className="flex-shrink-0 text-yellow-600" title="Нарушение ограничений">
-                    ⚠️
+                    <WarningIcon className="w-4 h-4 text-yellow-500" />
                   </div>
                 )}
               </div>

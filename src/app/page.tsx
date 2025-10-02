@@ -45,13 +45,6 @@ export default function Home() {
     setEvents(updatedEvents);
   };
 
-  const handleClearAllData = () => {
-    if (window.confirm('Вы уверены, что хотите удалить ВСЕ данные? Это действие нельзя отменить.')) {
-      localStorage.clear();
-      setEvents([]);
-      alert('Все данные удалены');
-    }
-  };
 
   if (loading) {
     return (
@@ -72,8 +65,7 @@ export default function Home() {
           Выберите событие и начните жеребьевку
         </h1>
         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          Система случайного определения последовательности выступлений команд 
-          с ограничением на соседние партнеры
+          Система случайного определения последовательности выступлений команд
         </p>
       </div>
 
@@ -82,19 +74,10 @@ export default function Home() {
         <h2 className="text-2xl font-semibold text-gray-800">Выберите событие</h2>
         <div className="flex space-x-3">
           {/* Кнопка очистки данных (только для разработки) */}
-          {process.env.NODE_ENV === 'development' && (
-            <button
-              onClick={handleClearAllData}
-              className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors text-sm"
-              title="Очистить все данные (только для разработки)"
-            >
-              🗑️ Очистить данные
-            </button>
-          )}
-          
           <Link
             href="/create"
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+            className="text-white px-6 py-3 rounded-lg hover:opacity-90 transition-colors flex items-center space-x-2"
+            style={{ backgroundColor: '#47EA91' }}
           >
             <span>Не нашли нужного события?</span>
             <span className="bg-white text-blue-600 px-3 py-1 rounded font-medium">
@@ -115,7 +98,8 @@ export default function Home() {
           </p>
           <Link
             href="/create"
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center space-x-2"
+            className="text-white px-6 py-3 rounded-lg hover:opacity-90 transition-colors inline-flex items-center space-x-2"
+            style={{ backgroundColor: '#47EA91' }}
           >
             <span>➕</span>
             <span>Создать событие</span>

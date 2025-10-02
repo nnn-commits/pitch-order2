@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { ChartIcon, CheckIcon, WarningIcon, PrintIcon } from '@/components/Icons';
 import { Event, LotteryResult } from '@/types';
 import { loadEvents, loadLotteryResults } from '@/lib/storage';
 import { LotteryResults } from '@/components/LotteryResults';
@@ -63,7 +64,8 @@ export default function ResultsPage() {
         </h2>
         <button
           onClick={() => router.push('/')}
-          className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+          className="text-white px-6 py-3 rounded-lg hover:opacity-90 transition-colors"
+          style={{ backgroundColor: '#3B9BFF' }}
         >
           Вернуться к событиям
         </button>
@@ -75,7 +77,9 @@ export default function ResultsPage() {
     return (
       <div className="max-w-4xl mx-auto">
         <div className="text-center py-16">
-          <div className="text-6xl mb-4">📊</div>
+          <div className="mb-4">
+            <ChartIcon className="w-16 h-16 text-blue-500 mx-auto" />
+          </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
             Результатов пока нет
           </h2>
@@ -85,9 +89,9 @@ export default function ResultsPage() {
           <div className="flex justify-center space-x-4">
             <button
               onClick={() => router.push(`/lottery/${event.id}`)}
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+              className="text-white px-6 py-3 rounded-lg hover:opacity-90 transition-colors flex items-center space-x-2"
+              style={{ backgroundColor: '#3B9BFF' }}
             >
-              <span>🎲</span>
               <span>Провести жеребьевку</span>
             </button>
             <button
@@ -135,9 +139,9 @@ export default function ResultsPage() {
         </button>
         <button
           onClick={() => router.push(`/lottery/${event.id}`)}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+          className="text-white px-4 py-2 rounded-lg hover:opacity-90 transition-colors flex items-center space-x-2"
+          style={{ backgroundColor: '#3B9BFF' }}
         >
-          <span>🎲</span>
           <span>Новая жеребьевка</span>
         </button>
       </div>
@@ -169,7 +173,11 @@ export default function ResultsPage() {
                         ? 'bg-green-100 text-green-800' 
                         : 'bg-yellow-100 text-yellow-800'
                     }`}>
-                      {result.isValid ? '✅' : '⚠️'}
+                      {result.isValid ? (
+                        <CheckIcon className="w-4 h-4 text-green-500" />
+                      ) : (
+                        <WarningIcon className="w-4 h-4 text-yellow-500" />
+                      )}
                     </span>
                   </div>
                   <div className="text-xs text-gray-600">
@@ -210,7 +218,7 @@ export default function ResultsPage() {
             onClick={() => window.print()}
             className="bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition-colors flex items-center space-x-2 mx-auto"
           >
-            <span>🖨️</span>
+            <PrintIcon className="w-4 h-4" />
             <span>Распечатать результат</span>
           </button>
         </div>
