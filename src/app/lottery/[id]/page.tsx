@@ -323,12 +323,6 @@ export default function LotteryPage() {
         <div className="space-y-8">
           {/* Кнопки управления */}
           <div className="text-center space-y-4">
-            <div>
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                Кейсы:
-              </h2>
-            </div>
-            
             <div className="flex justify-center space-x-4">
               {!currentResult && (
                 <button

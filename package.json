@@ -1,7 +1,11 @@
 {
   "name": "pitchorder2",
   "version": "0.1.0",
+  "description": "Система жеребьевки команд с ограничениями на соседние партнеры",
   "private": true,
+  "keywords": ["lottery", "teams", "partners", "random", "draw", "pitch", "order"],
+  "author": "PitchOrder Team",
+  "license": "MIT",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
