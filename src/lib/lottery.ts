@@ -57,7 +57,7 @@ export const validateLotteryFeasibility = (
 
 /**
  * Генерирует случайную последовательность команд с ограничением на соседних партнеров
- * Использует алгоритм "размещение с ограничениями"
+ * Использует алгоритм с множественными попытками для гарантии отсутствия нарушений
  */
 export const generateLotterySequence = (
   teams: Team[],
@@ -72,6 +72,26 @@ export const generateLotterySequence = (
     throw new Error(validation.violations.join('\n'));
   }
 
+  // Пытаемся сгенерировать корректную последовательность несколько раз
+  const maxAttempts = 1000;
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    const sequence = generateSingleSequence(teams, partners);
+    const violations = validateSequence(sequence);
+    
+    if (violations.length === 0) {
+      return sequence; // Нашли корректную последовательность
+    }
+  }
+
+  // Если не удалось найти корректную последовательность, используем детерминированный алгоритм
+  console.warn('Не удалось сгенерировать корректную последовательность за', maxAttempts, 'попыток. Используем детерминированный алгоритм.');
+  return generateDeterministicSequence(teams, partners);
+};
+
+/**
+ * Генерирует одну попытку последовательности с улучшенным алгоритмом
+ */
+function generateSingleSequence(teams: Team[], partners: Partner[]): Team[] {
   // Группируем команды по партнерам
   const partnerGroups = new Map<string, Team[]>();
   teams.forEach(team => {
@@ -81,18 +101,85 @@ export const generateLotterySequence = (
     partnerGroups.get(team.partnerId)!.push(team);
   });
 
-  // Сортируем группы по размеру (убывание)
-  const sortedGroups = Array.from(partnerGroups.entries())
+  // Перемешиваем группы для большей случайности
+  const sortedGroups = shuffleArray(Array.from(partnerGroups.entries()))
     .map(([partnerId, groupTeams]) => ({
       partnerId,
       teams: shuffleArray([...groupTeams])
+    }));
+
+  const result: Team[] = [];
+  const remainingTeams = new Map(sortedGroups.map(g => [g.partnerId, [...g.teams]]));
+
+  // Алгоритм размещения с приоритетом избежания нарушений
+  while (result.length < teams.length) {
+    const lastPartner = result.length > 0 ? result[result.length - 1].partnerId : null;
+    
+    // Собираем всех доступных партнеров (исключая последнего)
+    const availablePartners: string[] = [];
+    for (const [partnerId, partnerTeams] of remainingTeams) {
+      if (partnerTeams.length > 0 && partnerId !== lastPartner) {
+        availablePartners.push(partnerId);
+      }
+    }
+
+    // Если нет доступных партнеров (все оставшиеся команды от последнего партнера)
+    if (availablePartners.length === 0) {
+      // Добавляем всех партнеров с командами
+      for (const [partnerId, partnerTeams] of remainingTeams) {
+        if (partnerTeams.length > 0) {
+          availablePartners.push(partnerId);
+        }
+      }
+    }
+
+    if (availablePartners.length === 0) break; // Больше нет команд
+
+    // Выбираем случайного партнера из доступных
+    const randomIndex = Math.floor(Math.random() * availablePartners.length);
+    const selectedPartner = availablePartners[randomIndex];
+
+    // Берем случайную команду от выбранного партнера
+    const partnerTeams = remainingTeams.get(selectedPartner)!;
+    const teamIndex = Math.floor(Math.random() * partnerTeams.length);
+    const selectedTeam = partnerTeams.splice(teamIndex, 1)[0];
+    
+    result.push(selectedTeam);
+
+    // Удаляем пустые группы
+    if (partnerTeams.length === 0) {
+      remainingTeams.delete(selectedPartner);
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Детерминированный алгоритм, который гарантированно создает корректную последовательность
+ */
+function generateDeterministicSequence(teams: Team[], partners: Partner[]): Team[] {
+  // Группируем команды по партнерам
+  const partnerGroups = new Map<string, Team[]>();
+  teams.forEach(team => {
+    if (!partnerGroups.has(team.partnerId)) {
+      partnerGroups.set(team.partnerId, []);
+    }
+    partnerGroups.get(team.partnerId)!.push(team);
+  });
+
+  // Сортируем группы по количеству команд (убывание)
+  const sortedGroups = Array.from(partnerGroups.entries())
+    .map(([partnerId, groupTeams]) => ({
+      partnerId,
+      teams: [...groupTeams]
     }))
     .sort((a, b) => b.teams.length - a.teams.length);
 
   const result: Team[] = [];
   const remainingTeams = new Map(sortedGroups.map(g => [g.partnerId, [...g.teams]]));
 
-  // Алгоритм размещения
+  // Детерминированный алгоритм размещения
   while (result.length < teams.length) {
     const lastPartner = result.length > 0 ? result[result.length - 1].partnerId : null;
     
@@ -123,10 +210,9 @@ export const generateLotterySequence = (
 
     if (!bestPartner) break; // Больше нет команд
 
-    // Берем случайную команду от выбранного партнера
+    // Берем первую команду от выбранного партнера
     const partnerTeams = remainingTeams.get(bestPartner)!;
-    const teamIndex = Math.floor(Math.random() * partnerTeams.length);
-    const selectedTeam = partnerTeams.splice(teamIndex, 1)[0];
+    const selectedTeam = partnerTeams.shift()!;
     
     result.push(selectedTeam);
 
@@ -137,7 +223,7 @@ export const generateLotterySequence = (
   }
 
   return result;
-};
+}
 
 /**
  * Проверяет последовательность на нарушения (соседние команды одного партнера)

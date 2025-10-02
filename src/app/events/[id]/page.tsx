@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Event, Partner, Team } from '@/types';
+import { Event, Partner, Team, LotteryValidationResult } from '@/types';
 import { loadEvents, saveEvents, createPartner, createTeam } from '@/lib/storage';
+import { validateLotteryFeasibility } from '@/lib/lottery';
 import { PartnersSection } from '@/components/PartnersSection';
 import { TeamsSection } from '@/components/TeamsSection';
 
@@ -15,6 +16,7 @@ export default function EventDetailsPage() {
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'info' | 'partners' | 'teams'>('info');
+  const [lotteryValidation, setLotteryValidation] = useState<LotteryValidationResult | null>(null);
 
   useEffect(() => {
     const events = loadEvents();
@@ -26,6 +28,11 @@ export default function EventDetailsPage() {
     }
     
     setEvent(foundEvent);
+    
+    // Проверяем возможность проведения жеребьевки
+    const validation = validateLotteryFeasibility(foundEvent.teams, foundEvent.partners);
+    setLotteryValidation(validation);
+    
     setLoading(false);
   }, [eventId, router]);
 
@@ -36,6 +43,10 @@ export default function EventDetailsPage() {
     );
     saveEvents(updatedEvents);
     setEvent({ ...updatedEvent, updatedAt: new Date() });
+    
+    // Обновляем проверку валидности жеребьевки
+    const validation = validateLotteryFeasibility(updatedEvent.teams, updatedEvent.partners);
+    setLotteryValidation(validation);
   };
 
   const handleAddPartner = (name: string) => {
@@ -51,15 +62,6 @@ export default function EventDetailsPage() {
 
   const handleDeletePartner = (partnerId: string) => {
     if (!event) return;
-    
-    // Проверяем, есть ли команды с этим партнером
-    const hasTeams = event.teams.some(team => team.partnerId === partnerId);
-    
-    if (hasTeams) {
-      if (!window.confirm('У этого партнера есть команды. Удалить партнера и все его команды?')) {
-        return;
-      }
-    }
     
     const updatedEvent = {
       ...event,
@@ -116,13 +118,7 @@ export default function EventDetailsPage() {
   if (!event) {
     return (
       <div className="text-center py-16">
-        <div className="text-6xl mb-4">❌</div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">
-          Событие не найдено
-        </h2>
-        <p className="text-gray-600 mb-6">
-          Возможно, событие было удалено или не существует
-        </p>
+        <h1 className="text-2xl font-bold text-gray-900 mb-4">Событие не найдено</h1>
         <button
           onClick={() => router.push('/')}
           className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
@@ -139,8 +135,18 @@ export default function EventDetailsPage() {
     { id: 'teams' as const, label: `Команды (${event.teams.length})`, icon: '👥' },
   ];
 
+  const formatDate = (date: Date) => {
+    return new Intl.DateTimeFormat('ru-RU', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    }).format(date);
+  };
+
   return (
-    <div className="max-w-6xl mx-auto space-y-8">
+    <div className="space-y-6">
       {/* Заголовок */}
       <div className="flex justify-between items-start">
         <div>
@@ -148,13 +154,7 @@ export default function EventDetailsPage() {
             {event.name}
           </h1>
           <p className="text-gray-600">
-            Создано: {new Intl.DateTimeFormat('ru-RU', {
-              day: 'numeric',
-              month: 'long',
-              year: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit',
-            }).format(event.createdAt)}
+            Создано: {formatDate(event.createdAt)}
           </p>
         </div>
         <div className="flex space-x-3">
@@ -166,14 +166,40 @@ export default function EventDetailsPage() {
           </button>
           <button
             onClick={() => router.push(`/lottery/${event.id}`)}
-            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
-            disabled={event.teams.length === 0}
+            className={`px-6 py-2 rounded-lg transition-colors flex items-center space-x-2 ${
+              lotteryValidation?.canGenerate 
+                ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                : 'bg-gray-400 text-gray-200 cursor-not-allowed'
+            }`}
+            disabled={!lotteryValidation?.canGenerate}
+            title={!lotteryValidation?.canGenerate ? 'Невозможно провести жеребьевку без нарушений' : ''}
           >
             <span>🎲</span>
             <span>Жеребьевка</span>
           </button>
         </div>
       </div>
+
+      {/* Предупреждение о невозможности жеребьевки */}
+      {lotteryValidation && !lotteryValidation.canGenerate && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <div className="flex items-start space-x-3">
+            <div className="flex-shrink-0">
+              <span className="text-red-400 text-xl">⚠️</span>
+            </div>
+            <div>
+              <h3 className="font-medium text-red-800 mb-2">
+                Невозможно провести жеребьевку без нарушений
+              </h3>
+              <ul className="text-sm text-red-700 space-y-1">
+                {lotteryValidation.violations.map((violation, index) => (
+                  <li key={index}>• {violation}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Табы */}
       <div className="border-b border-gray-200">
@@ -247,10 +273,16 @@ export default function EventDetailsPage() {
                     <span>Добавьте команды во вкладке &quot;Команды&quot;</span>
                   </li>
                 )}
-                {event.teams.length > 0 && (
+                {lotteryValidation?.canGenerate && event.teams.length > 0 && (
                   <li className="flex items-center space-x-2">
                     <span className="w-2 h-2 bg-green-400 rounded-full"></span>
                     <span>Готово к проведению жеребьевки!</span>
+                  </li>
+                )}
+                {lotteryValidation && !lotteryValidation.canGenerate && event.teams.length > 0 && (
+                  <li className="flex items-center space-x-2">
+                    <span className="w-2 h-2 bg-red-400 rounded-full"></span>
+                    <span>Невозможно провести жеребьевку без нарушений</span>
                   </li>
                 )}
               </ul>
