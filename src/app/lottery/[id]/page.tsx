@@ -26,6 +26,7 @@ export default function LotteryPage() {
   const [showTeamsList, setShowTeamsList] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedPartner, setSelectedPartner] = useState<string>('');
+  const [countdown, setCountdown] = useState<number | null>(null);
 
   useEffect(() => {
     const events = loadEvents();
@@ -50,42 +51,57 @@ export default function LotteryPage() {
     setLoading(false);
   }, [eventId, router]);
 
+  const startCountdown = async (callback: () => Promise<void>) => {
+    setCountdown(3);
+    
+    for (let i = 3; i > 0; i--) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setCountdown(i - 1);
+    }
+    
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    setCountdown(null);
+    await callback();
+  };
+
   const handleGenerateLottery = async () => {
     if (!event || !validation?.canGenerate) return;
     
-    setIsGenerating(true);
-    
-    try {
-      // Добавляем небольшую задержку для UX
-      await new Promise(resolve => setTimeout(resolve, 500));
+    await startCountdown(async () => {
+      setIsGenerating(true);
       
-      const sequence = generateLotterySequence(event.teams, event.partners);
-      const result = createLotteryResult(event.id, sequence);
-      
-      // Сохраняем результат
-      const allResults = loadLotteryResults();
-      const updatedResults = [...allResults, result];
-      saveLotteryResults(updatedResults);
-      
-      setCurrentResult(result);
-      setPastResults(prev => [...prev, result]);
-      
-      // Автоматически скрываем список команд после жеребьевки для экономии места
-      setShowTeamsList(false);
-      
-    } catch (error) {
-      console.error('Ошибка генерации жеребьевки:', error);
-      alert(`Ошибка: ${error}`);
-    } finally {
-      setIsGenerating(false);
-    }
+      try {
+        // Добавляем небольшую задержку для UX
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        const sequence = generateLotterySequence(event.teams, event.partners);
+        const result = createLotteryResult(event.id, sequence);
+        
+        // Сохраняем результат
+        const allResults = loadLotteryResults();
+        const updatedResults = [...allResults, result];
+        saveLotteryResults(updatedResults);
+        
+        setCurrentResult(result);
+        setPastResults(prev => [...prev, result]);
+        
+        // Автоматически скрываем список команд после жеребьевки для экономии места
+        setShowTeamsList(false);
+        
+      } catch (error) {
+        console.error('Ошибка генерации жеребьевки:', error);
+        alert(`Ошибка: ${error}`);
+      } finally {
+        setIsGenerating(false);
+      }
+    });
   };
 
-  const handleRepeatLottery = () => {
+  const handleRepeatLottery = async () => {
     setCurrentResult(null);
     // Показываем список команд при повторной жеребьевке
     setShowTeamsList(true);
-    handleGenerateLottery();
+    await handleGenerateLottery();
   };
 
   const handleShowPastResult = (result: LotteryResult) => {
@@ -317,11 +333,15 @@ export default function LotteryPage() {
               {!currentResult && (
                 <button
                   onClick={handleGenerateLottery}
-                  disabled={isGenerating}
+                  disabled={isGenerating || countdown !== null}
                   className="text-white px-8 py-4 rounded-lg hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-3 text-lg font-medium"
                   style={{ backgroundColor: '#3B9BFF' }}
                 >
-                  {isGenerating ? (
+                  {countdown !== null ? (
+                    <div className="text-4xl font-bold animate-pulse">
+                      {countdown}
+                    </div>
+                  ) : isGenerating ? (
                     <>
                       <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
                       <span>Определение последовательности...</span>
@@ -338,11 +358,17 @@ export default function LotteryPage() {
                 <div className="flex space-x-4">
                   <button
                     onClick={handleRepeatLottery}
-                    disabled={isGenerating}
+                    disabled={isGenerating || countdown !== null}
                     className="text-white px-6 py-3 rounded-lg hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
                     style={{ backgroundColor: '#FE7096' }}
                   >
-                    <span>Повторить жеребьевку</span>
+                    {countdown !== null ? (
+                      <div className="text-2xl font-bold animate-pulse">
+                        {countdown}
+                      </div>
+                    ) : (
+                      <span>Повторить жеребьевку</span>
+                    )}
                   </button>
                   
                   <button
