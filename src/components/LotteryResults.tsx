@@ -54,14 +54,7 @@ export function LotteryResults({ result, event, showDetails = false }: LotteryRe
             </p>
           </div>
           <div className="text-right">
-            <div className={`inline-flex items-center space-x-2 px-3 py-1 rounded-full text-sm font-medium ${
-              result.isValid 
-                ? 'bg-green-100 text-green-800' 
-                : 'bg-yellow-100 text-yellow-800'
-            }`}>
-              <span>{result.isValid ? '✅' : '⚠️'}</span>
-              <span>{result.isValid ? 'Корректная' : 'С нарушениями'}</span>
-            </div>
+            {/* Скрыта кнопка статуса корректности */}
           </div>
         </div>
       </div>

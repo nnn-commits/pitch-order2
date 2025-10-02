@@ -17,7 +17,6 @@ export function Navigation() {
         <div className="flex items-center justify-between h-16">
           {/* Логотип */}
           <Link href="/" className="flex items-center space-x-2">
-            <div className="text-2xl">🏛️</div>
             <span className="text-xl font-bold text-gray-800">Финтех Хаб</span>
           </Link>
 

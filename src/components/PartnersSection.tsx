@@ -44,8 +44,8 @@ export function PartnersSection({
   };
 
   const defaultPartners = [
-    'НСПК', 'Альфа', 'Тинькофф', 'Сбер', 'ВТБ', 'МТС Банк', 
-    'Райффайзен', 'Россельхозбанк', 'Газпромбанк', 'Почта Банк'
+    'Альфа-Банк', 'НСПК', 'Центр-инвест', 'Московская Биржа', 'Т-Банк', 
+    'ВТБ', 'ИТ Холдинг Т1', 'Газпромбанк.Тех', 'Робокасса'
   ];
 
   return (
@@ -64,24 +64,22 @@ export function PartnersSection({
       </div>
 
       {/* Быстрое добавление */}
-      {partners.length === 0 && (
-        <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <h3 className="font-medium text-blue-900 mb-3">
-            Быстрое добавление популярных партнеров:
-          </h3>
-          <div className="flex flex-wrap gap-2">
-            {defaultPartners.map((partnerName) => (
-              <button
-                key={partnerName}
-                onClick={() => onAddPartner(partnerName)}
-                className="bg-white border border-blue-300 text-blue-700 px-3 py-1 rounded text-sm hover:bg-blue-50 transition-colors"
-              >
-                {partnerName}
-              </button>
-            ))}
-          </div>
+      <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+        <h3 className="font-medium text-blue-900 mb-3">
+          Быстрое добавление популярных партнеров:
+        </h3>
+        <div className="flex flex-wrap gap-2">
+          {defaultPartners.map((partnerName) => (
+            <button
+              key={partnerName}
+              onClick={() => onAddPartner(partnerName)}
+              className="bg-white border border-blue-300 text-blue-700 px-3 py-1 rounded text-sm hover:bg-blue-50 transition-colors"
+            >
+              {partnerName}
+            </button>
+          ))}
         </div>
-      )}
+      </div>
 
       {/* Форма добавления */}
       {isAdding && (

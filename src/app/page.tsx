@@ -107,7 +107,6 @@ export default function Home() {
       {/* Список событий */}
       {events.length === 0 ? (
         <div className="text-center py-16">
-          <div className="text-6xl mb-4">📋</div>
           <h3 className="text-xl font-medium text-gray-900 mb-2">
             Событий пока нет
           </h3>
