@@ -386,54 +386,7 @@ export default function LotteryPage() {
             />
           )}
 
-          {/* История результатов */}
-          {pastResults.length > 0 && !currentResult && (
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">
-                История жеребьевок ({pastResults.length})
-              </h3>
-              <div className="space-y-3">
-                {pastResults.slice(-5).reverse().map((result, index) => (
-                  <div
-                    key={result.id}
-                    className="flex items-center justify-between p-3 border border-gray-200 rounded hover:bg-gray-50 transition-colors"
-                  >
-                    <div>
-                      <div className="text-sm text-gray-600">
-                        {new Intl.DateTimeFormat('ru-RU', {
-                          day: 'numeric',
-                          month: 'long',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        }).format(result.createdAt)}
-                      </div>
-                      <div className="text-xs text-gray-500">
-                        <div className="flex items-center space-x-2">
-                          {result.isValid ? (
-                            <>
-                              <CheckIcon className="w-4 h-4 text-green-500" />
-                              <span>Корректная</span>
-                            </>
-                          ) : (
-                            <>
-                              <WarningIcon className="w-4 h-4 text-yellow-500" />
-                              <span>С нарушениями</span>
-                            </>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => handleShowPastResult(result)}
-                      className="bg-blue-100 text-blue-700 px-3 py-1 rounded text-sm hover:bg-blue-200 transition-colors"
-                    >
-                      Посмотреть
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+          {/* История результатов скрыта по требованию UX */}
         </div>
       ) : (
         <div className="text-center py-12">
